@@ -183,6 +183,14 @@ class Vim(BaseEditor):
 
 class Neovim(Vim):
     executable_name = 'nvim'
+    def visit_file(self, path, line, column):
+        args = f"{self.executable} +{line}"
+        if column > 1:
+            args += f" -c \"normal {column - 1}l\""
+        args += f" {path}"
+        cmd = ["ghostty", "-e", args]
+        log_info(" ".join(cmd))
+        subprocess.check_call(cmd)
 
 
 class Helix(BaseEditor):
