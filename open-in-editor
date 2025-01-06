@@ -95,7 +95,7 @@ class BaseEditor(object):
         path_head = path_head + os.sep if path_head else path_head # add / back if it existed
         executable_path = path_head + path_bin
 
-        editors = [Emacs, Sublime, PyCharm, VSCode, Vim, Helix, Zed, O]
+        editors = [Emacs, Sublime, PyCharm, VSCode, Vim, Neovim, Helix, Zed, O]
 
         inferred_editor = next((ed for ed in editors if path_bin == ed.executable_name), None)
         if inferred_editor is None:
@@ -104,8 +104,8 @@ class BaseEditor(object):
                 "The values of the relevant environment variables are: "
                 "OPEN_IN_EDITOR=%s and EDITOR=%s. "
                 "I was expecting one of these to contain one of the following substrings: "
-                "emacsclient, subl, charm, code, vim."
-                % (OPEN_IN_EDITOR, EDITOR)
+                "%s."
+                % (OPEN_IN_EDITOR, EDITOR, ", ".join(ed.executable_name for ed in editors))
             )
             sys.exit(1)
         return inferred_editor(executable_path)
@@ -179,6 +179,10 @@ class Vim(BaseEditor):
         cmd.extend(["-c", "normal %sl" % str(column - 1), path] if column > 1 else [path])
         log_info(" ".join(cmd))
         subprocess.check_call(cmd)
+
+
+class Neovim(Vim):
+    executable_name = 'nvim'
 
 
 class Helix(BaseEditor):
