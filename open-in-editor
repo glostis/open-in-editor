@@ -188,7 +188,7 @@ class Neovim(Vim):
         if column > 1:
             args += f" -c \"normal {column - 1}l\""
         args += f" {path}"
-        cmd = ["ghostty", "-e", args]
+        cmd = ["ghostty", f"--command={args}"]
         log_info(" ".join(cmd))
         subprocess.check_call(cmd)
 
